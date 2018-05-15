@@ -64,5 +64,5 @@ nacrtaj_polje slike (i,j) (Slika s) = let x = fromIntegral i
                                           vp = velicina_polja
                                           ps = (fromIntegral sirina) / 2
                                           pv = (fromIntegral visina) / 2
-                                      in translate ((x*vp)-ps) (pv-(y+0.5)*vp) $ scale 0.125 0.125 $ slike!!s
+                                      in translate (((x+0.5)*vp)-ps) (pv-(y+0.5)*vp) $ scale 0.125 0.125 $ slike !! s
 
