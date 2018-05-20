@@ -4,6 +4,7 @@ import Igra
 import Prozor
 import Crtanje
 import Pogadjanje(dogadjaj)
+import Graphics.Gloss.Data.Bitmap
 import Graphics.Gloss.Interface.IO.Game
 import Data.Time.Clock.POSIX
 import Random
@@ -39,9 +40,9 @@ bla slike = (simboli_1 slike) ++ (simboli_2 slike) ++ linije
 
 main :: IO ()
 main = do
-	     trenutnoVreme <- fmap round getPOSIXTime
-	     slike <- mapM loadBMP slike_putanje
-	     let resenje = map (\x -> Slika x) $ create_random_list 4 trenutnoVreme
-	     playIO prozor boja 24 pocetni_svet (slika_sveta slike) (dogadjaj resenje) prazno
+         trenutnoVreme <- fmap round getPOSIXTime
+         slike <- mapM loadBMP slike_putanje
+         let resenje = map (\x -> Slika x) $ create_random_list 4 trenutnoVreme
+         playIO prozor boja 24 pocetni_svet (slika_sveta slike) (dogadjaj resenje) prazno
            where prazno :: Float -> StanjeIgre -> IO StanjeIgre
                  prazno _ x = return x

@@ -31,17 +31,17 @@ klikniPolje _ _ _ x = return x
 
 proveri :: [VrednostPolja] -> StanjeIgre -> IO StanjeIgre
 proveri resenje igra@(Igra (stanje,broj,tacnost)) = if broj `mod` 4 == 0
-	                                                  then let kombinacija = take 4 $ drop (broj-4) stanje
-	                                                           novaTacnost = sort $ uporedi kombinacija resenje
-	                                                           pre = take (broj-4) tacnost
-	                                                           posle = drop broj tacnost 
-	                                                           tacnost' = pre ++ novaTacnost ++ posle
-	                                                       in if novaTacnost == (take 4 $ repeat Crveno)
-	                                       	                    then return $ Pobeda (stanje,tacnost')
-	                                       	                    else if broj == 24
-	                                       	    	                   then return $ Poraz (stanje,tacnost')
-	                                       	    	                   else return $ Igra (stanje,broj,tacnost')
-	                                                  else return igra
+                                                      then let kombinacija = take 4 $ drop (broj-4) stanje
+                                                               novaTacnost = sort $ uporedi kombinacija resenje
+                                                               pre = take (broj-4) tacnost
+                                                               posle = drop broj tacnost 
+                                                               tacnost' = pre ++ novaTacnost ++ posle
+                                                           in if novaTacnost == (take 4 $ repeat Crveno)
+                                                                then return $ Pobeda (stanje,tacnost')
+                                                                else if broj == 24
+                                                                       then return $ Poraz (stanje,tacnost')
+                                                                       else return $ Igra (stanje,broj,tacnost')
+                                                      else return igra
 proveri _ x = return x
 
 -- mozak igre
@@ -55,16 +55,16 @@ uporedi kombinacija resenje = let uporediNaMestu = map (\(x,y) -> if x==y then C
                                        f (l1,l2) pozicija = let element = l1 !! pozicija
                                                                 indeks = elemIndex element l2
                                                                 pre = take pozicija l1
-                                                            	posle = drop (pozicija+1) l1
+                                                                posle = drop (pozicija+1) l1
                                                             in if element == Crveno
-                                                            	  then (l1,l2)
-                                                            	  else if isNothing indeks
-                                                            	         then (pre ++ Prazno : posle,l2)
-                                                            	         else if pozicija == (fromJust indeks)
-                                                            	  	            then (l1,l2)
-                                                            	                else let i = fromJust indeks
-                                                            	                         prel2 = take i l2
-                                                            	                         poslel2 = drop (i+1) l2
-                                                            	                         l1' = pre ++ Zuto : posle
-                                                            	                         l2' = prel2 ++ Zuto : poslel2
-                                                            	                     in (l1',l2')
+                                                                 then (l1,l2)
+                                                                 else if isNothing indeks
+                                                                        then (pre ++ Prazno : posle,l2)
+                                                                        else if pozicija == (fromJust indeks)
+                                                                               then (l1,l2)
+                                                                               else let i = fromJust indeks
+                                                                                        prel2 = take i l2
+                                                                                        poslel2 = drop (i+1) l2
+                                                                                        l1' = pre ++ Zuto : posle
+                                                                                        l2' = prel2 ++ Zuto : poslel2
+                                                                                    in (l1',l2')

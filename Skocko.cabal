@@ -18,7 +18,7 @@ cabal-version:       >=1.10
 
 executable Skocko
   main-is:             Main.hs
-  other-modules:       Igra, Crtanje, Prozor, Pogadjanje 
+  other-modules:       Igra, Crtanje, Prozor, Pogadjanje, Random 
   -- other-extensions:    
   build-depends:       base >=4.6 && <4.11, gloss>=1.8, time>=1.4, random>=1.1
   hs-source-dirs:      src
