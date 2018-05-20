@@ -52,15 +52,15 @@ u_linije_simboli = take 4 $ map (color black . (\x -> line [((x+5)*vp-ps,-pv),((
 
 --(Int, Int) su indeksi polja u matrici table za pogadjanje
 nacrtaj_polje :: [Picture] -> (Int, Int) -> VrednostPolja -> Picture
-nacrtaj_polje _ (i,j) Nista = let x = fromIntegral i
-                                  y = fromIntegral j
+nacrtaj_polje _ (i,j) Nista = let x = fromIntegral j
+                                  y = fromIntegral i
                                   vp = velicina_polja
                                   ps = (fromIntegral sirina) / 2
                                   pv = (fromIntegral visina) / 2
                               in nacrtaj_pravougaonik ((x*vp-ps)) (pv-(y*vp)) ((x+1)*vp-ps) (pv-(y+1)*vp)
                                
-nacrtaj_polje slike (i,j) (Slika s) = let x = fromIntegral i
-                                          y = fromIntegral j
+nacrtaj_polje slike (i,j) (Slika s) = let x = fromIntegral j
+                                          y = fromIntegral i
                                           vp = velicina_polja
                                           ps = (fromIntegral sirina) / 2
                                           pv = (fromIntegral visina) / 2
