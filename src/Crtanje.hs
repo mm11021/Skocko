@@ -5,6 +5,29 @@ import Prozor(velicina_polja,sirina,visina)
 import Graphics.Gloss.Data.Color
 import Graphics.Gloss.Data.Picture
 
+slika_sveta :: [Picture] -> [VrednostPolja] -> StanjeIgre -> Picture
+slika_sveta slike _ (Igra (stanje,_,tacnost)) = let slika_levo = map (\((a,b),polje) -> nacrtaj_polje slike (a,b) polje) $ zip [(i,j)| i<-[0,1..5], j<-[0,1..3]] stanje
+                                                    slika_desno = map (\((a,b),polje) -> nacrtaj_polje_1 (a,b) polje) $ zip [(i,j)| i<-[0,1..5], j<-[0,1..3]] tacnost
+                                              in pictures $ slika_levo ++ slika_desno ++ donja_tabla slike
+
+slika_sveta slike x (Pobeda (stanje,tacnost)) = slika_sveta slike x (Igra (stanje,0,tacnost))
+
+slika_sveta slike resenje (Poraz (stanje,tacnost)) = let slika_levo = map (\((a,b),polje) -> nacrtaj_polje slike (a,b) polje) $ zip [(i,j)| i<-[0,1..5], j<-[0,1..3]] stanje
+                                                         slika_desno = map (\((a,b),polje) -> nacrtaj_polje_1 (a,b) polje) $ zip [(i,j)| i<-[0,1..5], j<-[0,1..3]] tacnost
+                                                         slika_dole = map (\((a,b),polje) -> nacrtaj_polje slike (a,b) polje) $ zip [(7,j)| j<-[0,1..3]] resenje
+                                                     in pictures $ slika_levo ++ slika_desno ++ donja_tabla slike ++ slika_dole ++ v_linije_dole ++ u_linije_dole
+                                                          where vp = velicina_polja
+                                                                ps = (fromIntegral sirina) / 2
+                                                                pv = (fromIntegral visina) / 2
+
+--linije na levoj, desno i donjoj tabli
+linije :: [Picture]
+linije = v_linije ++ u_linije ++ v_linije_simboli ++ u_linije_simboli ++ v_linije_desno ++ u_linije_desno
+
+--
+donja_tabla :: [Picture] -> [Picture]
+donja_tabla slike = (simboli_1 slike) ++ (simboli_2 slike) ++ linije
+
 --funkcija koja crta pravouganik cija su dijagonalna temena (x0,y0) i (x1,y1)
 nacrtaj_pravougaonik :: Float -> Float -> Float -> Float -> Picture
 nacrtaj_pravougaonik x0 y0 x1 y1 = color white $ polygon [(x0,y0),(x1,y0),(x1,y1),(x0,y1)]
@@ -26,17 +49,30 @@ u_linije = take 5 $ map (color black . (\x -> line [(x*vp-ps,pv),(x*vp-ps,pv-6*v
 --vodoravne linije table sa desne strane
 v_linije_desno :: [Picture]
 v_linije_desno = take 7 $ map (color black . (\x -> line [(ps,pv-x*vp),(ps-4*vp,pv-x*vp)])) [0,1..]
-                  where vp = velicina_polja
-                        ps = (fromIntegral sirina) / 2
-                        pv = (fromIntegral visina) / 2
+                   where vp = velicina_polja
+                         ps = (fromIntegral sirina) / 2
+                         pv = (fromIntegral visina) / 2
 
 --uspravne linije table sa desne strane
 u_linije_desno :: [Picture]
 u_linije_desno = take 5 $ map (color black . (\x -> line [(ps-x*vp,pv),(ps-x*vp,pv-6*vp)])) [0,1..]
-                  where vp = velicina_polja
-                        ps = (fromIntegral sirina) / 2
-                        pv = (fromIntegral visina) / 2
+                   where vp = velicina_polja
+                         ps = (fromIntegral sirina) / 2
+                         pv = (fromIntegral visina) / 2
 
+--vodoravne linije resenja
+v_linije_dole :: [Picture]
+v_linije_dole = take 2 $ map (color black . (\x -> line [(-ps,x*vp-pv),(4*vp-ps,x*vp-pv)])) [0,1..]
+                   where vp = velicina_polja
+                         ps = (fromIntegral sirina) / 2
+                         pv = (fromIntegral visina) / 2
+
+--uspravne linije resenja
+u_linije_dole :: [Picture]
+u_linije_dole = take 5 $ map (color black . (\x -> line [(x*vp-ps,-pv),(x*vp-ps,vp-pv)])) [0,1..]
+                   where vp = velicina_polja
+                         ps = (fromIntegral sirina) / 2
+                         pv = (fromIntegral visina) / 2
 
 --tabla na kojoj se nalaze simboli pomocu kojih igrac pogadja
 simboli_1 :: [Picture] -> [Picture]
