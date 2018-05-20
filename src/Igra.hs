@@ -3,9 +3,9 @@ module Igra where
 data VrednostPolja = Nista | Slika Int
   deriving (Eq, Ord, Show)
 
-data StanjeIgre = Igra ([VrednostPolja], Int)
- | Pobeda [VrednostPolja]
- | Poraz [VrednostPolja]
+data StanjeIgre = Igra ([VrednostPolja], Int, [Tacnost])
+ | Pobeda ([VrednostPolja], [Tacnost])
+ | Poraz ([VrednostPolja], [Tacnost])
    deriving (Eq, Show)
 
 data Tacnost = Crveno

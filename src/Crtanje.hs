@@ -9,19 +9,34 @@ import Graphics.Gloss.Data.Picture
 nacrtaj_pravougaonik :: Float -> Float -> Float -> Float -> Picture
 nacrtaj_pravougaonik x0 y0 x1 y1 = color white $ polygon [(x0,y0),(x1,y0),(x1,y1),(x0,y1)]
 
---vodoravne linije table
+--vodoravne linije table sa leve strane
 v_linije :: [Picture]
 v_linije = take 7 $ map (color black . (\x -> line [(-ps,pv-x*vp),(4*vp-ps,pv-x*vp)])) [0,1..]
                   where vp = velicina_polja
                         ps = (fromIntegral sirina) / 2
                         pv = (fromIntegral visina) / 2
 
---uspravne linije table
+--uspravne linije table sa leve strane
 u_linije :: [Picture]
 u_linije = take 5 $ map (color black . (\x -> line [(x*vp-ps,pv),(x*vp-ps,pv-6*vp)])) [0,1..]
                   where vp = velicina_polja
                         ps = (fromIntegral sirina) / 2
                         pv = (fromIntegral visina) / 2
+
+--vodoravne linije table sa desne strane
+v_linije_desno :: [Picture]
+v_linije_desno = take 7 $ map (color black . (\x -> line [(ps,pv-x*vp),(ps-4*vp,pv-x*vp)])) [0,1..]
+                  where vp = velicina_polja
+                        ps = (fromIntegral sirina) / 2
+                        pv = (fromIntegral visina) / 2
+
+--uspravne linije table sa desne strane
+u_linije_desno :: [Picture]
+u_linije_desno = take 5 $ map (color black . (\x -> line [(ps-x*vp,pv),(ps-x*vp,pv-6*vp)])) [0,1..]
+                  where vp = velicina_polja
+                        ps = (fromIntegral sirina) / 2
+                        pv = (fromIntegral visina) / 2
+
 
 --tabla na kojoj se nalaze simboli pomocu kojih igrac pogadja
 simboli_1 :: [Picture] -> [Picture]
@@ -57,12 +72,33 @@ nacrtaj_polje _ (i,j) Nista = let x = fromIntegral j
                                   vp = velicina_polja
                                   ps = (fromIntegral sirina) / 2
                                   pv = (fromIntegral visina) / 2
-                              in nacrtaj_pravougaonik ((x*vp-ps)) (pv-(y*vp)) ((x+1)*vp-ps) (pv-(y+1)*vp)
-                               
+                              in nacrtaj_pravougaonik (x*vp-ps) (pv-y*vp) ((x+1)*vp-ps) (pv-(y+1)*vp)
+                             
 nacrtaj_polje slike (i,j) (Slika s) = let x = fromIntegral j
                                           y = fromIntegral i
                                           vp = velicina_polja
                                           ps = (fromIntegral sirina) / 2
                                           pv = (fromIntegral visina) / 2
-                                      in translate (((x+0.5)*vp)-ps) (pv-(y+0.5)*vp) $ scale 0.125 0.125 $ slike !! s
+                                      in translate ((x+0.5)*vp-ps) (pv-(y+0.5)*vp) $ scale 0.125 0.125 $ slike !! s
 
+--(Int, Int) su indeksi polja u matrici table sa opisom pogotka
+nacrtaj_polje_1 :: (Int, Int) -> Tacnost -> Picture
+nacrtaj_polje_1 (i,j) Prazno = let x = fromIntegral j
+                                   y = fromIntegral i
+                                   vp = velicina_polja
+                                   ps = (fromIntegral sirina) / 2
+                                   pv = (fromIntegral visina) / 2
+                               in nacrtaj_pravougaonik ((x+0.5)*vp) (pv-y*vp) ((x+1.5)*vp) (pv-(y+1)*vp)
+                               
+nacrtaj_polje_1 (i,j) q = let x = (fromIntegral j) + 1
+                              y = fromIntegral i
+                              vp = velicina_polja
+                              ps = (fromIntegral sirina) / 2
+                              pv = (fromIntegral visina) / 2
+                          in translate (x*vp) (pv-(y+0.5)*vp) $ kvadratIKrug q
+
+kvadratIKrug :: Tacnost -> Picture
+kvadratIKrug Crveno = pictures $ [nacrtaj_pravougaonik (-pvp) (-pvp) pvp pvp, color red $ circleSolid pvp]
+                        where pvp = velicina_polja / 2
+kvadratIKrug Zuto = pictures $ [nacrtaj_pravougaonik (-pvp) (-pvp) pvp pvp, color yellow $ circleSolid pvp]
+                        where pvp = velicina_polja / 2

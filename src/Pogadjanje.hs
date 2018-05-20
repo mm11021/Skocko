@@ -23,33 +23,36 @@ sledeceStanje x y igra = klikniPolje (floor (x/vp-0.5)) (floor ((-y)/vp-2)) igra
                               where vp = velicina_polja
 
 klikniPolje :: Int -> Int -> StanjeIgre -> IO StanjeIgre
-klikniPolje x y igra@(Igra (stanje,broj)) = if (elem x [0,1,2]) && (elem y [0,1])
-                                              then let pre = take broj stanje
-                                                       posle = drop (broj+1) stanje
-                                                       novoStanje = Igra ((pre ++ (Slika (3*y+x)) : posle),broj+1) 
-                                                   in proveri novoStanje
-                                              else return igra
+klikniPolje x y igra@(Igra (stanje,broj,tacnost)) = if (elem x [0,1,2]) && (elem y [0,1])
+                                                      then let pre = take broj stanje
+                                                               posle = drop (broj+1) stanje
+                                                               novoStanje = Igra ((pre ++ (Slika (3*y+x)) : posle),broj+1,tacnost) 
+                                                           in proveri novoStanje
+                                                      else return igra
 
 klikniPolje _ _ x = return x
 
 proveri :: StanjeIgre -> IO StanjeIgre
-proveri igra@(Igra (stanje,broj)) = if broj `mod` 4 == 0
-	                                  then let kombinacija = take 4 $ drop (broj-4) stanje
-	                                           tacnost = uporedi kombinacija resenje
-	                                       in if tacnost == (take 4 $ repeat Crveno)
-	                                       	    then do
-	                                       	    	   putStrLn "Pobeda! :)"
-	                                       	    	   print tacnost
-	                                       	    	   return $ Pobeda stanje
-	                                       	    else if broj == 24
-	                                       	    	   then do
-	                                       	    	   	      putStrLn "Poraz! :("
-	                                       	    	   	      print tacnost
-	                                       	    	   	      return $ Poraz stanje
-	                                       	    	   else do
-	                                       	    	   	      print tacnost
-	                                       	    	   	      return igra
-	                                  else return igra
+proveri igra@(Igra (stanje,broj,tacnost)) = if broj `mod` 4 == 0
+	                                          then let kombinacija = take 4 $ drop (broj-4) stanje
+	                                                   novaTacnost = sort $ uporedi kombinacija resenje
+	                                                   pre = take (broj-4) tacnost
+	                                                   posle = drop broj tacnost 
+	                                                   tacnost' = pre ++ novaTacnost ++ posle
+	                                               in if novaTacnost == (take 4 $ repeat Crveno)
+	                                       	            then do
+	                                       	    	           putStrLn "Pobeda! :)"
+	                                       	    	           print novaTacnost
+	                                       	    	           return $ Pobeda (stanje,tacnost')
+	                                       	            else if broj == 24
+	                                       	    	           then do
+	                                       	    	   	              putStrLn "Poraz! :("
+	                                       	    	   	              print novaTacnost
+	                                       	    	   	              return $ Poraz (stanje,tacnost')
+	                                       	    	           else do
+	                                       	    	   	              print novaTacnost
+	                                       	    	   	              return $ Igra (stanje,broj,tacnost')
+	                                          else return igra
 proveri x = return x
 
 -- mozak igre
