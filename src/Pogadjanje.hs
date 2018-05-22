@@ -2,7 +2,7 @@ module Pogadjanje where
 
 import Prozor
 import Igra
-import Graphics.Gloss.Interface.IO.Game
+import Graphics.Gloss.Interface.Pure.Game
 import Data.List
 import Data.Maybe
 
@@ -11,6 +11,14 @@ dogadjaj :: [VrednostPolja] -> Event -> StanjeIgre -> StanjeIgre
 
 --reakcija na levi klik
 dogadjaj resenje (EventKey (MouseButton LeftButton) Down _ (x,y)) igra = sledeceStanje resenje x y igra
+
+--reakcija na bekspejs (za vracanje poteza)
+--NAPOMENA: Iako postoji SpecialKey KeyBackspace, kada se pritisne bekspejs, registruje se kao Char '\b'
+dogadjaj _ (EventKey (Char '\b') Down _ _) igra@(Igra (stanje,broj,tacnost)) = if broj `mod` 4 /= 0
+                                                                                 then let pre = take (broj-1) stanje
+                                                                                          posle = drop broj stanje
+                                                                                      in Igra (pre ++ Nista : posle,broj-1,tacnost)
+                                                                                 else igra
 
 --na ostale dogadjaje ne reaguje
 dogadjaj _ _ igra = igra
